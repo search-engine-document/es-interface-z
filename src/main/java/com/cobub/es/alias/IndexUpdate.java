@@ -24,7 +24,7 @@ public class IndexUpdate {
         List<Map> list = new ArrayList<Map>();
         // Client client = ClientFactory.getClient();
         SearchResponse response = client.prepareSearch(index).setTypes(type)
-                .setSearchType(SearchType.SCAN)
+                //.setSearchType(SearchType.SCAN)
                 .setScroll(new TimeValue(100000))
                 .setQuery(QueryBuilders.matchAllQuery())
                 .setSize(100)

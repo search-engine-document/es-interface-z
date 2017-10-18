@@ -58,43 +58,6 @@ public class SearchIndex {
     }
 
     @Test
-    public void queryTest() throws IOException {
-        try {
-            BufferedReader bodyReader = new BufferedReader(new InputStreamReader(new FileInputStream("D:\\common.template"), "utf8"));
-            String line = null;
-            StringBuilder strBuffer = new StringBuilder();
-            while ((line = bodyReader.readLine()) != null) {
-                strBuffer.append(line);
-                strBuffer.append("\n");
-            }
-
-            Map<String, Object> search_params = new HashMap();
-            search_params.put("from", 1);
-            search_params.put("size", 5);
-            search_params.put("key_words", "opencv sift");
-
-            QueryBuilder qb = QueryBuilders.templateQuery(strBuffer.toString(), search_params);
-            SearchResponse sr;
-            SearchRequestBuilder srb;
-            srb = client2.prepareSearch("twitter")
-                    .setTypes("tweet")
-                    .setQuery(qb);
-            sr = srb.get();
-
-            for (SearchHit hit : sr.getHits().getHits()) {
-                System.out.println(hit.getSourceAsString());
-            }
-        } catch (UnsupportedEncodingException ex) {
-
-        } catch (FileNotFoundException ex) {
-
-        } catch (IOException ex) {
-
-        }
-
-    }
-
-    @Test
     public void matchAllQueryTest() {
         long t1 = System.currentTimeMillis();
         SearchResponse response = client2.prepareSearch()

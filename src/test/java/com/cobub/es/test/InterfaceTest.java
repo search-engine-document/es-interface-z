@@ -7,21 +7,11 @@ import com.cobub.es.json.JSONObject;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.aggregations.Aggregation;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
-import org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -62,6 +52,11 @@ public class InterfaceTest {
         if (null != client) {
             client.close();
         }
+    }
+
+    @Test
+    public void test_get_client() {
+        System.out.println(client);
     }
 
 
@@ -163,22 +158,6 @@ public class InterfaceTest {
     }
 
     @Test
-    public void test_agg() {
-
-        MetricsAggregationBuilder aggregation =
-                AggregationBuilders.max("acc");
-
-        SearchResponse searchResponse =
-                client.prepareSearch().addAggregation(AggregationBuilders.cardinality("agg").field("event_identifier"))
-                        .execute()
-                        .actionGet();
-        Cardinality agg = searchResponse.getAggregations().get("agg");
-        long value = agg.getValue();
-        System.out.println("value=" + value);
-
-    }
-
-    @Test
     public void test_str() {
         String str1 = "weifengisgoodmanweifengwei";
         String str2 = "wei";
@@ -186,7 +165,7 @@ public class InterfaceTest {
         String[] strs = str1.split(str2);
         System.out.println(strs.length);
 
-        for (String s : strs){
+        for (String s : strs) {
             System.out.println(s);
         }
 

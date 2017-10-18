@@ -83,7 +83,6 @@ public class EsSearch {
         Set<String> set = new HashSet<String>();
         SearchRequestBuilder builder = searchBuilder(client.prepareSearch(), index, types, termMap, operation, from, size);
         // not return sources
-        builder.addField("");
         SearchResponse searchResponse = builder.get();
         SearchHit[] hits = searchResponse.getHits().getHits();
         for (SearchHit hit : hits) {
@@ -145,10 +144,10 @@ public class EsSearch {
             builder.setQuery(boolQueryBuilder);
         }
 
-        if (null == from){
+        if (null == from) {
             from = Constants.DEFAULT_FROM;
         }
-        if (null == size){
+        if (null == size) {
             size = Constants.DEFAULT_SIZE;
         }
         builder.setFrom(from)
