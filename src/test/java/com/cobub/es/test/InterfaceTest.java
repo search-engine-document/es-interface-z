@@ -40,6 +40,20 @@ public class InterfaceTest {
         return jsonObject.toString();
     }
 
+    public String generateContentLong(Random random) {
+        String phoneNumber = 1 + "";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("city", citys[random.nextInt(citys.length)]);
+        jsonObject.put("sex", sexs[random.nextInt(sexs.length)]);
+        String channel = channels[random.nextInt(channels.length)];
+        jsonObject.put("channel", channel + channel + channel);
+        for (int i = 0; i < 10; i++) {
+            phoneNumber += numbers[random.nextInt(numbers.length)];
+        }
+        jsonObject.put("phoneNumber", phoneNumber);
+        return jsonObject.toString();
+    }
+
     Client client;
 
     @Before
@@ -121,15 +135,24 @@ public class InterfaceTest {
         EsOperator esOperator = new EsOperator(client);
         Random random = new Random();
         List<PutBean> list = new ArrayList<PutBean>();
+        int num = 1000000;
         long t1 = System.currentTimeMillis();
-        for (int i = 0; i < 10000; i++) {
-            PutBean putBean = new PutBean(index, type, UUID.randomUUID().toString().replace("-", ""), generateContent(random));
+        for (int i = 0; i < num; i++) {
+            PutBean putBean = new PutBean("twitter", "tagType", UUID.randomUUID().toString().replace("-", ""), generateContent(random));
             list.add(putBean);
         }
         esOperator.putList(list);
         long t2 = System.currentTimeMillis();
-        System.out.println((t2 - t1) + " ms");
+        System.out.println("use time=" + ((t2 - t1) / 1000f) + " s, " + " write speed=" + (num / ((t2 - t1) / 1000f)) + " item/s");
+    }
 
+    @Test
+    public void test_num() {
+        int num = 100000;
+        long t2 = 1000l;
+        long t1 = 100l;
+        System.out.println(t2 - t1);
+        System.out.println((num / (t2 - t1) / 1000f));
     }
 
     @Test

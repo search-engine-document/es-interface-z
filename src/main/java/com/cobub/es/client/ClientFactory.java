@@ -35,12 +35,12 @@ public class ClientFactory {
         try {
 
             Settings settings = Settings.builder()
-                    .put("cluster.name", prop.getProperty("cluster.name", "zqy-es-application"))
+                    .put("cluster.name", prop.getProperty("cluster.name", "zqykj-es-cluster"))
                     .put("client.transport.sniff", prop.getProperty("client.transport.sniff", "true"))  // true 把集群中其它机器的ip地址加到客户端中
                     .build();
             client = new PreBuiltTransportClient(settings)
                     .addTransportAddresses(
-                            new InetSocketTransportAddress(InetAddress.getByName("dev60"), 9300)
+                            new InetSocketTransportAddress(InetAddress.getByName("172.30.6.33"), 9300)
                     );
 
         } catch (UnknownHostException e) {

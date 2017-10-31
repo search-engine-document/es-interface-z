@@ -5,8 +5,13 @@ import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
+
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 /**
  * Created by alfer on 10/18/17.
@@ -57,8 +62,74 @@ public class SettingsManager {
     public void putMapping(String indice, String type, Map mappigSource) {
         indicesAdminClient.preparePutMapping(indice)
                 .setType(type)
-                .setSource(mappigSource)
+                .setSource(MappingBuilder.getMapping(mappigSource))
                 .get();
+    }
+
+    public void putMapping(String indice, String type) {
+        indicesAdminClient.preparePutMapping(indice)
+                .setType(type)
+                .setSource(MappingBuilder.getMapping())
+                .get();
+    }
+
+    static class MappingBuilder {
+        public static XContentBuilder getMapping(Map<String, Map<String, String>> map) {
+            XContentBuilder mapping = null;
+            try {
+                mapping = jsonBuilder()
+                        .startObject()
+                        .startObject("properties");
+
+                Iterator<Map.Entry<String, Map<String, String>>> propsIter = map.entrySet().iterator();
+                while (propsIter.hasNext()) {
+                    Map.Entry<String, Map<String, String>> mapEntry = propsIter.next();
+                    mapping.startObject(mapEntry.getKey());
+                    Iterator<Map.Entry<String, String>> iterator = mapEntry.getValue().entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<String, String> entry = iterator.next();
+                        mapping.field(entry.getKey(), entry.getValue());
+                    }
+                    mapping.endObject();
+                }
+                mapping.endObject()
+                        .endObject();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return mapping;
+        }
+
+        public static XContentBuilder getMapping() {
+            XContentBuilder mapping = null;
+            try {
+                mapping = jsonBuilder()
+                        .startObject()
+//                        //_ttl has removed in 5.0
+                        .startObject("properties")
+                        //                        .startObject("id").field("type", "long").endObject()
+                        //                        .startObject("title").field("type", "string").field("store", "yes")
+                        //                        //指定index analyzer 为 ik
+                        //                        .field("analyzer", "ik")
+                        //                        //指定search_analyzer 为ik_syno
+                        //                        .field("searchAnalyzer", "ik_syno")
+                        //                        .endObject()
+                        .startObject("sex").field("type", "string")
+                        .endObject()
+                        .startObject("city").field("type", "string")
+                        .endObject()
+                        .startObject("channel").field("type", "string").field("index", "not_analyzed")
+                        .endObject()
+                        .startObject("phoneNumber").field("type", "string")
+                        .endObject()
+                        .endObject()
+                        .endObject();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return mapping;
+        }
     }
 
     /**

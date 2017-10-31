@@ -1,6 +1,8 @@
 package com.cobub.es.client;
 
+import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.client.Client;
 
@@ -13,16 +15,14 @@ import java.util.concurrent.ExecutionException;
 public class EsOperator {
 
     Client client;
-    BulkRequestBuilder bulkRequestBuilder;
+
 
     public EsOperator() {
         client = ClientFactory.getClient();
-        bulkRequestBuilder = client.prepareBulk();
     }
 
     public EsOperator(Client client) {
         this.client = client;
-        bulkRequestBuilder = client.prepareBulk();
     }
 
     /**
@@ -31,11 +31,12 @@ public class EsOperator {
      * @param beanList
      */
     public void putList(List<PutBean> beanList) {
-
+        BulkRequestBuilder bulkRequestBuilder = client.prepareBulk();
         for (PutBean putBean : beanList) {
             bulkRequestBuilder.add(prePut(putBean));
         }
-        bulkRequestBuilder.execute();
+        ListenableActionFuture<BulkResponse> future = bulkRequestBuilder.execute();
+        System.out.println("status=" + future.actionGet().status().getStatus());
 
     }
 

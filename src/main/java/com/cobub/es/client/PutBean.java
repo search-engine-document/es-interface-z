@@ -15,6 +15,12 @@ public class PutBean {
     public PutBean() {
     }
 
+    public PutBean(String index, String type, String source) {
+        this.index = index;
+        this.type = type;
+        this.source = source;
+    }
+
     public PutBean(String index, String type, String id, String source) {
         this.index = index;
         this.type = type;
